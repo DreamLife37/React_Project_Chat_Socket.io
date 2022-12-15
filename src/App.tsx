@@ -1,55 +1,56 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
 import {Item} from "./chat/item/Item";
-import {socket} from "./api";
-
+import {createConnection, sendMessage, sendName} from "./store/slices/chatSlice";
+import {useAppDispatch, useAppSelector} from "./hooks/redux-hooks";
 
 function App() {
 
+    const dispatch = useAppDispatch()
+    const messages = useAppSelector(state => state.messages)
+
+    const messagesAnchorBlockRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        socket.on('init-messages-published', (messages) => {
-            debugger
-            console.log(messages)
-            setMessages(messages)
-        })
-        socket.on('new-message-sent', (message: any) => {
-            console.log(message)
+        dispatch(createConnection())
+    }, [dispatch])
 
-            setMessages((messages) => [...messages, message])
-        })
+    useEffect(() => {
+        messagesAnchorBlockRef.current?.scrollIntoView({behavior: "smooth"})
+    }, [messages])
 
-    }, [])
-
-
-    const [messages, setMessages] = useState<Array<any>>([])
-    const [message, setMessage] = useState('hello')
+    const [message, setMessage] = useState<any>('hello')
     const [name, setName] = useState('Andrey')
-
 
     return (
         <div className="App">
             <header className="App-header">
-                <div style={{border: '1px solid white', padding: '10px', height: '300px',width:'280px', overflowY: 'scroll'}}
-                     onScroll={(e) => console.log(e.currentTarget)}>
+                <div style={{
+                    border: '1px solid white',
+                    padding: '10px',
+                    height: '300px',
+                    width: '280px',
+                    overflowY: 'scroll'
+                }}
+                >
                     {messages.map((i, index) => {
-                        return <Item user={i} index={index} key={index}/>
+                        return <Item user={i} key={index}/>
                     })}
+                    <div ref={messagesAnchorBlockRef}></div>
                 </div>
 
                 <input value={name}
                        onChange={(e) => setName(e.currentTarget.value)}/>
                 <button onClick={() => {
-                    socket.emit('client-name-sent', name);
-                    // setMessage("")
+                    dispatch(sendName({name}))
                 }}>Send name
                 </button>
 
                 <textarea value={message}
                           onChange={(e) => setMessage(e.currentTarget.value)}
-                ></textarea>
+                />
                 <button onClick={() => {
-                    socket.emit('client-message-sent', message);
+                    dispatch(sendMessage({message}));
                     setMessage("")
                 }}>Отправить
                 </button>
