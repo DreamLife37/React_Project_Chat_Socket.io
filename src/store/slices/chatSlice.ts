@@ -6,12 +6,12 @@ export const createConnection = createAsyncThunk(
     async (_, {dispatch}) => {
         api.createConnection()
         api.subscribe((messages) => {
-            console.log('messagesReceived', messages)
-            dispatch(messagesReceived(messages))
-        }, (message) => {
-            console.log('newMessageReceived', message)
-            dispatch(newMessageReceived(message))
-        })
+                dispatch(messagesReceived(messages))
+            },
+            (message) => {
+                dispatch(newMessageReceived(message))
+            }
+        )
     })
 
 
@@ -25,11 +25,12 @@ export const sendName = createAsyncThunk(
     'chat/sendName',
     async (param: { name: string }, {dispatch}) => {
         api.sendName(param.name)
+        dispatch(setName(param.name))
     }
 )
 
 export const sendMessage = createAsyncThunk(
-    'chat/sendMessage', async (param: { message: string }, {dispatch}) => {
+    'chat/sendMessage', async (param: { message: string }) => {
         api.sendMessage(param.message)
     }
 )
@@ -42,7 +43,8 @@ export type MessageItemType = {
 
 const initialState = {
     messages: [{}] as Array<MessageItemType>,
-    message: {} as MessageItemType
+    message: {} as MessageItemType,
+    name: ''
 }
 
 const chatSlice = createSlice({
@@ -54,10 +56,13 @@ const chatSlice = createSlice({
         },
         newMessageReceived(state, action) {
             state.messages = [...state.messages, action.payload]
+        },
+        setName(state, action) {
+            state.name = action.payload
         }
     }
 })
 
-export const {messagesReceived, newMessageReceived} = chatSlice.actions
+export const {messagesReceived, newMessageReceived, setName} = chatSlice.actions
 
 export const chatReducer = chatSlice.reducer

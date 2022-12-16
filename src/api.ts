@@ -9,7 +9,8 @@ export const api = {
     },
 
     subscribe(initMessagesHandler: (messages: any) => void,
-              newMessageSentHandler: (message: any) => void) {
+              newMessageSentHandler: (message: any) => void
+    ) {
         this.socket?.on('init-messages-published', initMessagesHandler)
         this.socket?.on('new-message-sent', newMessageSentHandler)
     },

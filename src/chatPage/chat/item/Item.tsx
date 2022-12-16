@@ -1,5 +1,5 @@
 import {FC} from "react";
-import {MessageItemType} from "../../store/slices/chatSlice";
+import {MessageItemType} from "../../../store/slices/chatSlice";
 
 type ItemPropsType = {
     user: MessageItemType
