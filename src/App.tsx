@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect,} from 'react';
 import './App.css';
-import {createConnection, destroyConnection, sendMessage, sendName} from "./store/slices/chatSlice";
-import {useAppDispatch, useAppSelector} from "./hooks/redux-hooks";
+import {createConnection, destroyConnection, sendName,} from "./store/slices/chatSlice";
+import {useAppDispatch,} from "./hooks/redux-hooks";
 import {InputName} from "./inputName/InputName";
-import {Chat} from "./chatPage/chat/Chat";
-import {InputMessage} from "./chatPage/inputMessage/InputMessage";
 import {Route, Routes} from 'react-router-dom';
 import {ChatPage} from "./chatPage/ChatPage";
+import {api} from './api';
+import {useLocalStorage} from "./hooks/useLocalStorage";
 
 function App() {
 
@@ -18,6 +18,20 @@ function App() {
             destroyConnection()
         }
     }, [dispatch])
+
+
+    const [username] = useLocalStorage('username', '')
+    const [userId] = useLocalStorage('userId', '')
+
+    useEffect(() => {
+        api.test()
+    }, [])
+
+    useEffect(() => {
+        if (username !== 'Anonym' && username !== undefined) {
+            dispatch(sendName({name: username, userId: userId}))
+        }
+    }, [username])
 
     return (
         <div className="App">

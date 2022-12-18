@@ -9,9 +9,13 @@ export const createConnection = createAsyncThunk(
                 dispatch(messagesReceived(messages))
             },
             (message) => {
+                console.log(message)
                 dispatch(newMessageReceived(message))
             }
         )
+        // api.connected((id) => {
+        //     dispatch(setUserId(id))
+        // })
     })
 
 
@@ -21,11 +25,21 @@ export const destroyConnection = createAsyncThunk(
         api.destroyConnection()
     })
 
+export const logout = createAsyncThunk(
+    'chat/destroyConnection',
+    async (_, {dispatch}) => {
+        localStorage.removeItem('username')
+        localStorage.removeItem('userId')
+        dispatch(setName(''))
+        dispatch(setUserId(''))
+    })
+
 export const sendName = createAsyncThunk(
     'chat/sendName',
-    async (param: { name: string }, {dispatch}) => {
-        api.sendName(param.name)
+    async (param: { name: string, userId: string }, {dispatch}) => {
+        api.sendName(param.name, param.userId)
         dispatch(setName(param.name))
+        dispatch(setUserId(param.userId))
     }
 )
 
@@ -44,7 +58,8 @@ export type MessageItemType = {
 const initialState = {
     messages: [{}] as Array<MessageItemType>,
     message: {} as MessageItemType,
-    name: ''
+    name: '',
+    userId: ''
 }
 
 const chatSlice = createSlice({
@@ -59,10 +74,13 @@ const chatSlice = createSlice({
         },
         setName(state, action) {
             state.name = action.payload
-        }
+        },
+        setUserId(state, action) {
+            state.userId = action.payload
+        },
     }
 })
 
-export const {messagesReceived, newMessageReceived, setName} = chatSlice.actions
+export const {messagesReceived, newMessageReceived, setName, setUserId} = chatSlice.actions
 
 export const chatReducer = chatSlice.reducer
