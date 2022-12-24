@@ -4,15 +4,19 @@ import {api} from "../../api";
 export const createConnection = createAsyncThunk(
     'chat/createConnection',
     async (_, {dispatch}) => {
-        api.createConnection()
-        api.subscribe((messages) => {
-                dispatch(messagesReceived(messages))
-            },
-            (message) => {
-                console.log(message)
-                dispatch(newMessageReceived(message))
-            }
-        )
+      try {
+          api.createConnection()
+          api.subscribe((messages) => {
+                  dispatch(messagesReceived(messages))
+              },
+              (message) => {
+                  dispatch(newMessageReceived(message))
+              }
+          )
+      }
+      catch (e){
+          console.log(e)
+      }
         // api.connected((id) => {
         //     dispatch(setUserId(id))
         // })

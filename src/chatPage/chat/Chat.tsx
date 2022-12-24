@@ -21,7 +21,6 @@ export const Chat = () => {
 
     useEffect(() => {
         if (!username) {
-            debugger
             navigate("/inputName")
         }
     }, [name])
@@ -53,7 +52,7 @@ export const Chat = () => {
             {messages.map((i, index) => {
                 return <Item user={i} key={index}/>
             })}
-            <div ref={messagesAnchorBlockRef}></div>
+            <div ref={messagesAnchorBlockRef}/>
         </Box>
     </Box>
 }

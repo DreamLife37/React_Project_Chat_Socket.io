@@ -5,7 +5,6 @@ import {useAppDispatch,} from "./hooks/redux-hooks";
 import {InputName} from "./inputName/InputName";
 import {Route, Routes} from 'react-router-dom';
 import {ChatPage} from "./chatPage/ChatPage";
-import {api} from './api';
 import {useLocalStorage} from "./hooks/useLocalStorage";
 
 function App() {
@@ -17,15 +16,10 @@ function App() {
         return () => {
             destroyConnection()
         }
-    }, [dispatch])
-
+    }, [])
 
     const [username] = useLocalStorage('username', '')
     const [userId] = useLocalStorage('userId', '')
-
-    useEffect(() => {
-        api.test()
-    }, [])
 
     useEffect(() => {
         if (username !== 'Anonym' && username !== undefined) {
